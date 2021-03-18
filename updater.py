@@ -6,30 +6,25 @@ import json
 
 tg_token = settings.tg_token
 
-
 with open("map_data.json","r") as f:
     chatid_map = json.load(f)
 
 chatid_map = chatid_map["chatid_map"]
 
-
-
 viber_ex = ViberExtractor()
-
 
 eventid = 0
 
 def send_text(text,chat_id,tg_token=tg_token):
     try:
         text = f"{text['sender']}: {text['text']}"
-        url =f"https://api.telegram.org/bot{tg_token}/sendMessage?chat_id={chat_id}&text={text}"
+        url = f"https://api.telegram.org/bot{tg_token}/sendMessage?chat_id={chat_id}&text={text}"
         print(url)
-        message = requests.get(f"https://api.telegram.org/bot{tg_token}/sendMessage?chat_id={chat_id}&text={text}")
+        request = requests.get(url)
         print(message.text)
-        return message
-
+        return "Sent to Telegram"
     except:
-        return "error"
+        return "Error occured while sending message"
 
 
 while True:
@@ -43,6 +38,5 @@ while True:
             if viber_chatid in chatid_map:
                 print("in")
                 tg_chatid = chatid_map[viber_chatid]
-                send_text(text,tg_chatid)
-                print("sent to tg")
-
+                result = send_text(text,tg_chatid)
+                print(result)
