@@ -24,7 +24,7 @@ class ViberExtractor():
 
 
 
-    def extract(self,chat_name=None,initial_run=False,time_delta=30):
+    def extract(self,chat_name=None,initial_run=False,time_delta=60):
 
 
         c_time = datetime.now() 
@@ -46,7 +46,7 @@ class ViberExtractor():
         #if a chat_id is supplied, get only messages with chat_id
         chat_str = " where ChatId='" + str(chat_id) + "'" if chat_name else ""
         time_str = f" where timestamp BETWEEN {int(unixtime_start)} and {unixtime_end}"
-        query= "select timestamp, EventId, datetime(timestamp, 'unixepoch'), Body, Direction from EventInfo" + chat_str + time_str + " order by timestamp"
+        query= "select timestamp, EventId, datetime(timestamp, 'unixepoch'), Body, Direction,PayloadPath from EventInfo" + chat_str + time_str + " order by timestamp"
         messages = self.sql_helper.execute(query)
 
         #print(messages)
@@ -75,6 +75,7 @@ class ViberExtractor():
                     "eventid":y[1],
                     "chatid":z[0][0],
                     "sender":x[0][1],
+                    "media_path":y[5],
                     "to":z[0][1],
                     "text":y[3]
                 }
@@ -84,6 +85,7 @@ class ViberExtractor():
                     "eventid":y[1],
                     "chatid":z[0][0],
                     "sender":"null",
+                    "media_path":None,
                     "to":"null",
                     "text":y[3]
                 }
