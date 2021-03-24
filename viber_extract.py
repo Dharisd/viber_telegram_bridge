@@ -52,7 +52,6 @@ class ViberExtractor():
         #print(messages)
 
 
-
         #get the id of the contact that sent each message
         ids = [self.sql_helper.execute("select ContactID from Events where EventID='" + str(x[1]) + "'")[0][0] for x in messages]
         chat_ids = [self.sql_helper.execute("select ChatID from Events where EventID='" + str(x[1]) + "'")[0][0] for x in messages]
@@ -87,8 +86,9 @@ class ViberExtractor():
                     "to":"null",
                     "text":y[3]
                 }
-            
-            final.append(filtered)
+            #filter likes and reactions
+            if not (filtered["text"].isnumeric() and len(filtered["text"]) > 13):
+                final.append(filtered)
 
             #print the messages to a text file
         return final
